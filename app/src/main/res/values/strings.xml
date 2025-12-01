@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">프로젝터 원격조종</string>
+
+    <!-- Section Headers -->
+    <string name="section_video">동영상 선택</string>
+    <string name="section_video_desc">동영상을 선택하세요</string>
+    <string name="section_devices">빔프로젝터</string>
+    <string name="section_devices_desc">빔프로젝터 찾기</string>
+    <string name="section_streaming">동영상 재생</string>
+    <string name="section_streaming_desc">선택한 장치에서 재생을 제어합니다</string>
+
+    <!-- Buttons -->
+    <string name="select_video">동영상 선택</string>
+    <string name="find_devices">빔프로젝터 찾기</string>
+    <string name="stop_search">검색 중지</string>
+    <string name="start_streaming">재생</string>
+    <string name="stop_streaming">정지</string>
+    <string name="pause">일시정지</string>
+    <string name="resume">계속 재생</string>
+    <string name="refresh">새로고침</string>
+    <string name="ok">확인</string>
+
+    <!-- Status Messages -->
+    <string name="status_idle">재생 준비 완료</string>
+    <string name="status_preparing">연결 준비 중…</string>
+    <string name="status_streaming">%2$s에서 %1$s 재생 중</string>
+    <string name="status_paused">일시정지됨</string>
+    <string name="status_stopped">정지됨</string>
+    <string name="status_error">오류: %1$s</string>
+
+    <!-- Device List -->
+    <string name="searching">장치 검색 중…</string>
+    <string name="no_devices">장치를 찾을 수 없습니다. 빔프로젝터와 같은 WiFi 네트워크에 연결되어 있는지 확인하세요.</string>
+    <string name="device_selected">선택됨: %1$s</string>
+
+    <!-- WiFi -->
+    <string name="wifi_info">WiFi: %1$s (%2$s)</string>
+    <string name="wifi_required_title">WiFi 필요</string>
+    <string name="wifi_required_message">빔프로젝터를 찾고 동영상을 재생하려면 WiFi 네트워크에 연결해야 합니다.</string>
+
+    <!-- Permissions -->
+    <string name="permission_required_title">권한 필요</string>
+    <string name="permission_required_message">동영상 파일을 선택하려면 저장소 권한이 필요합니다. 설정에서 권한을 허용해 주세요.</string>
+
+    <!-- Content Descriptions -->
+    <string name="video_icon">동영상 아이콘</string>
+    <string name="device_icon">장치 아이콘</string>
+
+    <!-- Footer -->
+    <string name="footer_company">주식회사 디앤에이보이</string>
+</resources>
