@@ -71,17 +71,13 @@ class DLNAService : Service() {
         // UPnP Service Types
         private val AV_TRANSPORT_SERVICE = UDAServiceType("AVTransport")
 
-        // mDNS service types to search for
+        // mDNS service types to search for (only EShare/RAOP - these are the ones that work)
         private val MDNS_SERVICE_TYPES = listOf(
-            "_airplay._tcp.local.",
-            "_raop._tcp.local.",
-            "_eshare._tcp.local.",
-            "_googlecast._tcp.local.",
-            "_mediarenderer._tcp.local."
+            "_raop._tcp.local."  // EShare devices advertise via RAOP
         )
 
-        // Common DLNA/streaming ports to scan
-        private val COMMON_PORTS = listOf(7000, 7100, 8008, 8009, 8080, 8443, 9000, 49152, 49153, 49154)
+        // Disable port scanning - only mDNS discovered EShare devices work reliably
+        private val COMMON_PORTS = emptyList<Int>()
     }
 
     // Binder for local service binding
@@ -360,41 +356,34 @@ class DLNAService : Service() {
                         val info = event.info
                         Log.d(TAG, "mDNS service resolved: ${info.name} (${event.type}) at ${info.hostAddresses.firstOrNull()}:${info.port}")
 
+                        // Only accept EShare devices (they contain "EShare" in the name)
+                        val deviceName = info.name
+                        if (!deviceName.contains("EShare", ignoreCase = true)) {
+                            Log.d(TAG, "Skipping non-EShare device: $deviceName")
+                            return
+                        }
+
                         info.hostAddresses.firstOrNull()?.let { host ->
-                            // Determine friendly device type name and correct port
-                            val isRaop = event.type.contains("raop", ignoreCase = true)
-
-                            val deviceType = when {
-                                event.type.contains("eshare", ignoreCase = true) -> "EShare"
-                                event.type.contains("airplay", ignoreCase = true) -> "AirPlay"
-                                isRaop -> "AirPlay"  // Treat RAOP as AirPlay for video
-                                event.type.contains("googlecast", ignoreCase = true) -> "Chromecast"
-                                else -> "Media Renderer"
-                            }
-
                             // For RAOP services, the video port is typically 7000
-                            // RAOP port is for audio, but video uses a different port
-                            val videoPort = if (isRaop) 7000 else info.port
+                            val videoPort = 7000
 
                             // Clean up device name (remove MAC address prefix if present)
-                            val cleanName = if (info.name.contains("@")) {
-                                info.name.substringAfter("@")
+                            val cleanName = if (deviceName.contains("@")) {
+                                deviceName.substringAfter("@")
                             } else {
-                                info.name
+                                deviceName
                             }
 
                             addGenericDevice(GenericDevice(
                                 name = cleanName,
                                 host = host,
                                 port = videoPort,
-                                type = deviceType
-                            ), priority = true)  // mDNS devices have priority
+                                type = "EShare"
+                            ), priority = true)
 
-                            // Also try to probe the actual AirPlay port
-                            if (isRaop) {
-                                serviceScope.launch(Dispatchers.IO) {
-                                    probeAirPlayPort(host, cleanName)
-                                }
+                            // Probe for the actual AirPlay port
+                            serviceScope.launch(Dispatchers.IO) {
+                                probeAirPlayPort(host, cleanName)
                             }
                         }
                     }
